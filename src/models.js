@@ -1,7 +1,7 @@
 const assert = require('assert')
 
 const { Transaction } = require('@google-cloud/firestore')
-const S = require('@pocketgems/schema')
+const S = require('@pbvision/schema')
 const stableStringify = require('fast-json-stable-stringify')
 
 const { Data } = require('./data')
@@ -121,7 +121,7 @@ class Model {
     if (!this.KEY) {
       throw new InvalidFieldError('KEY', 'the partition key is required')
     }
-    if (this.KEY.isTodeaSchema || this.KEY.schema) {
+    if (this.KEY.isSchema || this.KEY.schema) {
       throw new InvalidFieldError('KEY', 'must define key component name(s)')
     }
     if (Object.keys(this.KEY).length === 0) {
@@ -231,7 +231,7 @@ class Model {
   /**
    * Defines the non-key fields. By default there are no fields.
    *
-   * Properties are defined as a map from field names to a Todea schema:
+   * Properties are defined as a map from field names to Schema objects:
    * @example
    *   static FIELDS = {
    *     someNumber: S.double,

@@ -107,7 +107,7 @@ class __Field extends __BaseField {
       isKey = false
     }
     assert([true, false].includes(isKey), 'isKey must be true or false')
-    assert(schema.isTodeaSchema, 'must be Todea schema')
+    assert(schema.isSchema, 'must be Schema object')
 
     const compiledSchema = schema.getValidatorAndJSONSchema(
       `${modelName}.${fieldName}`)

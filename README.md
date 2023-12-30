@@ -2,7 +2,7 @@
 This library is used to interact with the Firestore NoSQL database. It provides
 high-level abstractions to structure data and prevent race conditions.
 
-[![JSDoc](https://img.shields.io/badge/Documentation-JSDoc-green.svg?logo=githubpages)](https://dound.github.io/firestore-orm)
+[![JSDoc](https://img.shields.io/badge/Documentation-JSDoc-green.svg?logo=githubpages)](https://pbv-public.github.io/firestore-orm)
 
 - [Core Concepts](#core-concepts)
   - [Minimal Example](#minimal-example)
@@ -52,7 +52,7 @@ in other databases). Each document ("doc") is uniquely identified by a
 
 ## Minimal Example
 Define a new collection like this, using the
-[Todea Schema library](https://github.com/pocketgems/schema) to enforce a
+[Schema library](https://github.com/pbv-public/js-schema) to enforce a
 schema:
 ```javascript <!-- embed:./test/unit-test-doc.js:scope:Order -->
 class OrderWithNoPrice extends db.Model {
@@ -93,7 +93,7 @@ changed.
 
 You can override the default and define your key to be composed of one _or
 more_ fields with an arbitrary
-[Todea schema](https://github.com/pocketgems/schema)s (`S`):
+[Schema](https://github.com/pbv-public/js-schema)s (`S`):
 ```javascript <!-- embed:./test/unit-test-doc.js:scope:RaceResult -->
 class RaceResult extends db.Model {
   static KEY = {
@@ -137,7 +137,7 @@ the same key.
 ### Fields
 Fields are pieces of data attached to a doc. They are defined similar to
 `KEY` -- a doc can have one _or more_ fields with arbitrary
-[Todea schema](https://github.com/pocketgems/schema)s:
+[Schema](https://github.com/pbv-public/js-schema)s:
 ```javascript <!-- embed:./test/unit-test-doc.js:scope:ModelWithFields -->
 class ModelWithFieldsExample extends db.Model {
   static FIELDS = {

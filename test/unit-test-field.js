@@ -1,5 +1,5 @@
-const S = require('@pocketgems/schema')
-const { BaseTest, runTests } = require('@pocketgems/unit-test')
+const S = require('@pbvision/schema')
+const { BaseTest, runTests } = require('@pbvision/jest-unit-test')
 
 const { NotImplementedError } = require('../src/errors')
 const { __FieldInterface } = require('../src/fields')

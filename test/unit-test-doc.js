@@ -1,5 +1,5 @@
-const S = require('@pocketgems/schema')
-const { BaseTest, runTests } = require('@pocketgems/unit-test')
+const S = require('@pbvision/schema')
+const { BaseTest, runTests } = require('@pbvision/jest-unit-test')
 const uuidv4 = require('uuid').v4
 
 const db = require('../src/default-db')

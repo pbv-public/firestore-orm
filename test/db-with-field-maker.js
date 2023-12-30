@@ -1,6 +1,6 @@
 const assert = require('assert')
 
-const S = require('@pocketgems/schema')
+const S = require('@pbvision/schema')
 
 const db = require('../src/default-db')
 

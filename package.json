@@ -1,5 +1,5 @@
 {
-  "name": "@dound/firestore-orm",
+  "name": "@pbvision/firestore-orm",
   "version": "0.0.2",
   "description": "Firestore ORM Library",
   "license": "Apache-2.0",
@@ -23,10 +23,10 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/dound/firestore-orm.git"
+    "url": "https://github.com/pbv-public/firestore-orm.git"
   },
   "publishConfig": {
-    "registry": "https://registry.npmjs.org/@dound"
+    "registry": "https://registry.npmjs.org"
   },
   "files": [
     "environment.js",
@@ -43,14 +43,14 @@
     "uuid": "^8.3.2"
   },
   "peerDependencies": {
-    "@pocketgems/schema": "^0.1.2"
+    "@pbvision/schema": "^0.1.4"
   },
   "devDependencies": {
     "@babel/core": "^7.17.12",
     "@babel/eslint-parser": "^7.17.0",
     "@babel/preset-env": "^7.17.12",
-    "@pocketgems/schema": "^0.1.2",
-    "@pocketgems/unit-test": "^0.2.0",
+    "@pbvision/schema": "^0.1.4",
+    "@pbvision/jest-unit-test": "^0.2.0",
     "eslint": "^8.22.0",
     "eslint-config-standard": "15.0.0",
     "eslint-plugin-import": "^2.22.0",

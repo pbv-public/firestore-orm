@@ -1,4 +1,4 @@
-const { BaseTest, runTests } = require('@pocketgems/unit-test')
+const { BaseTest, runTests } = require('@pbvision/jest-unit-test')
 
 const Emitter = require('../src/async-emitter')
 

@@ -1,4 +1,4 @@
-const S = require('@pocketgems/schema')
+const S = require('@pbvision/schema')
 
 const {
   getWithArgs,

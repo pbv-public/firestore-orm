@@ -1,10 +1,11 @@
-const assert = require('assert')
+import assert from 'node:assert'
 
-const S = require('@pbvision/schema')
-const { BaseTest, runTests } = require('@pbvision/jest-unit-test')
-const uuidv4 = require('uuid').v4
+import { jest } from '@jest/globals'
+import { BaseTest, runTests } from '@pbvision/jest-unit-test'
+import S from '@pbvision/schema'
+import { v4 as uuidv4 } from 'uuid'
 
-const db = require('./db-with-field-maker')
+import db from './db-with-field-maker.js'
 
 async function txGetGeneric (cls, values, func) {
   return db.Context.run({ retries: 0 }, async tx => {
@@ -473,7 +474,7 @@ class TransactionWriteTest extends QuickTransactionTest {
     await db.verifyDoc(TransactionExample, id) // does not exist yet
     await db.Context.run(async tx => {
       tx.createOrOverwrite(TransactionExample,
-        { id: id, field1: 3, field2: 1 })
+        { id, field1: 3, field2: 1 })
     })
     await db.verifyDoc(TransactionExample, id, { field1: 3, field2: 1 })
 

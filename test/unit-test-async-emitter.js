@@ -1,11 +1,12 @@
-const { BaseTest, runTests } = require('@pbvision/jest-unit-test')
+import { jest } from '@jest/globals'
+import { BaseTest, runTests } from '@pbvision/jest-unit-test'
 
-const Emitter = require('../src/async-emitter')
+import { AsyncEmitter } from '../src/async-emitter.js'
 
 class EmitterTest extends BaseTest {
   async testHandleOnce () {
     const mock = jest.fn()
-    const emitter = new Emitter()
+    const emitter = new AsyncEmitter()
     emitter.once('abc', mock)
     await emitter.emit('aaa')
     expect(mock).toHaveBeenCalledTimes(0)
@@ -18,7 +19,7 @@ class EmitterTest extends BaseTest {
   }
 
   async testRemovingHandler () {
-    const emitter = new Emitter()
+    const emitter = new AsyncEmitter()
     emitter.removeHandler('abc', 'aaa')
 
     const name = emitter.once('abc', () => {})
@@ -28,7 +29,7 @@ class EmitterTest extends BaseTest {
 
   async testRepeatedHandler () {
     const mock = jest.fn()
-    const emitter = new Emitter()
+    const emitter = new AsyncEmitter()
     emitter.on('abc', mock)
 
     await emitter.emit('aaa')
@@ -43,7 +44,7 @@ class EmitterTest extends BaseTest {
 
   async testNamedHandler () {
     const mock = jest.fn()
-    const emitter = new Emitter()
+    const emitter = new AsyncEmitter()
     const name = emitter.once('abc', mock, 'h1')
     expect(name).toBe('h1')
 
@@ -64,7 +65,7 @@ class EmitterTest extends BaseTest {
 
   testDefaultHandlerName () {
     const mock = jest.fn()
-    const emitter = new Emitter()
+    const emitter = new AsyncEmitter()
     const name = emitter.once('abc', mock)
     expect(name).toBeDefined()
 
@@ -74,7 +75,7 @@ class EmitterTest extends BaseTest {
 
   async testArgPassing () {
     const mock = jest.fn()
-    const emitter = new Emitter()
+    const emitter = new AsyncEmitter()
     emitter.once('a', mock)
     await emitter.emit('a', 1, 2, 3)
     expect(mock).toHaveBeenLastCalledWith(1, 2, 3)

@@ -8,7 +8,7 @@
  * @access public
  * @memberof Errors
  */
-class InvalidOptionsError extends Error {
+export class InvalidOptionsError extends Error {
   constructor (option, expectation) {
     super(`Invalid option value for ${option}. ${expectation}.`)
     this.name = this.constructor.name
@@ -21,7 +21,7 @@ class InvalidOptionsError extends Error {
  * @access public
  * @memberof Errors
  */
-class InvalidParameterError extends Error {
+export class InvalidParameterError extends Error {
   constructor (param, expectation) {
     super(`Invalid parameter ${param}. ${expectation}.`)
     this.name = this.constructor.name
@@ -34,7 +34,7 @@ class InvalidParameterError extends Error {
  * @access public
  * @memberof Errors
  */
-class InvalidFieldError extends Error {
+export class InvalidFieldError extends Error {
   constructor (field, reason) {
     super(`${field} ${reason}`)
     this.name = this.constructor.name
@@ -51,7 +51,7 @@ class InvalidFieldError extends Error {
  * @access public
  * @memberof Errors
  */
-class TransactionFailedError extends Error {
+export class TransactionFailedError extends Error {
   constructor (msg, originalException) {
     super(msg)
     this.name = this.constructor.name
@@ -62,7 +62,7 @@ class TransactionFailedError extends Error {
   }
 }
 
-class TransactionLockTimeoutError extends TransactionFailedError {
+export class TransactionLockTimeoutError extends TransactionFailedError {
   constructor (reason, original) {
     super(reason, original)
     this.name = this.constructor.name
@@ -74,7 +74,7 @@ class TransactionLockTimeoutError extends TransactionFailedError {
  * Thrown when there's some error with a particular model.
  * @memberof Errors
  */
-class GenericModelError extends Error {
+export class GenericModelError extends Error {
   constructor (msg, collection, _id) {
     super(`${msg}: ${collection} _id=${_id}`)
     this.name = this.constructor.name
@@ -87,7 +87,7 @@ class GenericModelError extends Error {
  * same key.
  * @memberof Errors
  */
-class ModelAlreadyExistsError extends GenericModelError {
+export class ModelAlreadyExistsError extends GenericModelError {
   constructor (collection, _id) {
     super('Tried to recreate an existing model', collection, _id)
   }
@@ -96,7 +96,7 @@ class ModelAlreadyExistsError extends GenericModelError {
 /**
  * Thrown when model is tracked more than once inside a transaction.
  */
-class ModelTrackedTwiceError extends GenericModelError {
+export class ModelTrackedTwiceError extends GenericModelError {
   constructor (key, trackedModel) {
     const msg = 'Model tracked twice'
     super(msg, key.Cls.collectionName, key.encodedKey)
@@ -109,7 +109,7 @@ class ModelTrackedTwiceError extends GenericModelError {
  * Thrown when a model is being deleted more than once.
  * @memberof Errors
  */
-class DeletedTwiceError extends GenericModelError {
+export class DeletedTwiceError extends GenericModelError {
   constructor (collectionName, _id) {
     super('Tried to delete model twice in the same transaction',
       collectionName, _id)
@@ -120,30 +120,16 @@ class DeletedTwiceError extends GenericModelError {
  * Thrown when a tx tries to write when it was marked read-only.
  * @memberof Errors
  */
-class WriteAttemptedInReadOnlyTxError extends Error {
+export class WriteAttemptedInReadOnlyTxError extends Error {
   constructor (dataToWrite) {
     super(`Tried to write model in a read-only transaction with the following
       changes ${JSON.stringify(dataToWrite)}`)
   }
 }
 
-class NotImplementedError extends Error {
+export class NotImplementedError extends Error {
   constructor (reason) {
     super(reason)
     this.name = this.constructor.name
   }
-}
-
-module.exports = {
-  DeletedTwiceError,
-  GenericModelError,
-  InvalidFieldError,
-  InvalidOptionsError,
-  InvalidParameterError,
-  ModelAlreadyExistsError,
-  ModelTrackedTwiceError,
-  NotImplementedError,
-  TransactionFailedError,
-  TransactionLockTimeoutError,
-  WriteAttemptedInReadOnlyTxError
 }

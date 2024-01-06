@@ -1,10 +1,10 @@
-const {
+import {
   InvalidFieldError,
   InvalidOptionsError,
   InvalidParameterError
-} = require('./errors')
+} from './errors.js'
 
-function validateValue (fieldName, opts, val) {
+export function validateValue (fieldName, opts, val) {
   const schema = opts.schema
   const valueType = SCHEMA_TYPE_TO_JS_TYPE_MAP[schema.type]
 
@@ -22,7 +22,7 @@ function validateValue (fieldName, opts, val) {
   return valueType
 }
 
-const SCHEMA_TYPE_TO_JS_TYPE_MAP = {
+export const SCHEMA_TYPE_TO_JS_TYPE_MAP = {
   array: Array,
   boolean: Boolean,
   integer: Number,
@@ -32,13 +32,13 @@ const SCHEMA_TYPE_TO_JS_TYPE_MAP = {
   string: String
 }
 
-async function sleep (millis) {
+export async function sleep (millis) {
   return new Promise((resolve, reject) => {
     setTimeout(resolve, millis)
   })
 }
 
-function checkUnexpectedOptions (options, defaults) {
+export function checkUnexpectedOptions (options, defaults) {
   if (typeof options !== 'object') {
     throw new InvalidParameterError('options', 'must be an object')
   }
@@ -58,18 +58,10 @@ function checkUnexpectedOptions (options, defaults) {
   })
 }
 
-function loadOptionDefaults (options, defaults) {
+export function loadOptionDefaults (options, defaults) {
   // istanbul ignore next
   options = options || {}
   checkUnexpectedOptions(options, defaults)
   const retOptions = Object.assign({}, defaults)
   return Object.assign(retOptions, options)
-}
-
-module.exports = {
-  checkUnexpectedOptions,
-  loadOptionDefaults,
-  SCHEMA_TYPE_TO_JS_TYPE_MAP,
-  sleep,
-  validateValue
 }

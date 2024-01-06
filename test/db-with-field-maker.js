@@ -1,8 +1,8 @@
-const assert = require('assert')
+import assert from 'node:assert'
 
-const S = require('@pbvision/schema')
+import S from '@pbvision/schema'
 
-const db = require('../src/default-db')
+import db from '../src/default-db.js'
 
 db.verifyDoc = async (ModelCls, id, data) => {
   const docRef = db.firestoreDB.collection(ModelCls.collectionName).doc(id)
@@ -103,4 +103,4 @@ function fieldFromFieldOptions (Cls, options) {
   })
 }
 
-module.exports = db
+export default db

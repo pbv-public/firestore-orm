@@ -1,12 +1,12 @@
-const assert = require('assert')
+import assert from 'node:assert'
 
-const { Transaction } = require('@google-cloud/firestore')
-const { detailedDiff } = require('deep-object-diff')
+import { Transaction } from '@google-cloud/firestore'
+import { detailedDiff } from 'deep-object-diff'
 
-const AsyncEmitter = require('./async-emitter')
-const { Data } = require('./data')
-const DBError = require('./db-error')
-const {
+import { AsyncEmitter } from './async-emitter.js'
+import { Data } from './data.js'
+import { DBError } from './db-error.js'
+import {
   InvalidOptionsError,
   InvalidParameterError,
   DeletedTwiceError,
@@ -15,12 +15,12 @@ const {
   ModelTrackedTwiceError,
   ModelAlreadyExistsError,
   TransactionLockTimeoutError
-} = require('./errors')
-const { Key } = require('./key')
-const { Model } = require('./models')
-const { sleep, loadOptionDefaults } = require('./utils')
+} from './errors.js'
+import { Key } from './key.js'
+import { Model } from './models.js'
+import { sleep, loadOptionDefaults } from './utils.js'
 
-async function getWithArgs (args, callback) {
+export async function getWithArgs (args, callback) {
   if (!args || !(args instanceof Array) || args.length === 0) {
     throw new InvalidParameterError('args', 'must be a non-empty array')
   }
@@ -70,7 +70,7 @@ async function getWithArgs (args, callback) {
  * reads across multiple docs).
  * @public
  */
-class Context {
+export class Context {
   /**
    * Options for interacting with Firestore.
    * @typedef {Object} ContextOptions
@@ -669,9 +669,4 @@ function parseFirestoreErrorPath (err) {
       } catch { /* no-op */ }
     }
   }
-}
-
-module.exports = {
-  Context,
-  getWithArgs
 }

@@ -1,11 +1,11 @@
-const assert = require('assert')
+import assert from 'node:assert'
 
-const { FieldValue } = require('@google-cloud/firestore')
-const deepeq = require('fast-deep-equal')
-const deepcopy = require('rfdc')()
+import { FieldValue } from '@google-cloud/firestore'
+import deepeq from 'fast-deep-equal'
+import deepcopy from 'rfdc/default'
 
-const { InvalidFieldError, InvalidOptionsError, NotImplementedError } = require('./errors')
-const { validateValue } = require('./utils')
+import { InvalidFieldError, InvalidOptionsError, NotImplementedError } from './errors.js'
+import { validateValue } from './utils.js'
 
 /**
  * Abstract class representing a field / property of a Model.
@@ -13,7 +13,7 @@ const { validateValue } = require('./utils')
  * @private
  * @memberof Internal
  */
-class __FieldInterface {
+export class __FieldInterface {
   constructor () {
     if (this.constructor === __FieldInterface) {
       throw new Error('Can not instantiate abstract class')
@@ -96,7 +96,7 @@ class __BaseField extends __FieldInterface {
  * @private
  * @memberof Internal
  */
-class __Field extends __BaseField {
+export class __Field extends __BaseField {
   static __validateFieldOptions (modelName, isKey, fieldName, schema) {
     if (fieldName.startsWith('_')) {
       throw new InvalidFieldError(
@@ -358,7 +358,7 @@ class __Field extends __BaseField {
  * @memberof Internal.Fields
  * @private
  */
-class NumberField extends __Field {
+export class NumberField extends __Field {
   constructor (options) {
     super(options)
     this.__diff = undefined
@@ -453,7 +453,7 @@ class NumberField extends __Field {
  * @memberof Internal.Fields
  * @private
  */
-class StringField extends __Field {
+export class StringField extends __Field {
   get mutated () {
     return this.__mayHaveMutated && super.mutated
   }
@@ -464,7 +464,7 @@ class StringField extends __Field {
  * @memberof Internal.Fields
  * @private
  */
-class ObjectField extends __Field {
+export class ObjectField extends __Field {
   /**
    * This method checks for equality deeply against the initial
    * value so use it as sparsely as possible. It is primarily meant to be
@@ -483,14 +483,14 @@ class ObjectField extends __Field {
  * @memberof Internal.Fields
  * @private
  */
-class BooleanField extends __Field {}
+export class BooleanField extends __Field {}
 
 /**
  * @extends Internal.__Field
  * @memberof Internal.Fields
  * @private
  */
-class ArrayField extends __Field {
+export class ArrayField extends __Field {
   /**
    * This method checks for equality deeply against the initial
    * value so use it as sparsely as possible. It is primarily meant to be
@@ -504,7 +504,7 @@ class ArrayField extends __Field {
   }
 }
 
-const SCHEMA_TYPE_TO_FIELD_CLASS_MAP = {
+export const SCHEMA_TYPE_TO_FIELD_CLASS_MAP = {
   array: ArrayField,
   boolean: BooleanField,
   float: NumberField,
@@ -512,15 +512,4 @@ const SCHEMA_TYPE_TO_FIELD_CLASS_MAP = {
   number: NumberField,
   object: ObjectField,
   string: StringField
-}
-
-module.exports = {
-  __FieldInterface,
-  __Field,
-  NumberField,
-  ArrayField,
-  BooleanField,
-  StringField,
-  ObjectField,
-  SCHEMA_TYPE_TO_FIELD_CLASS_MAP
 }

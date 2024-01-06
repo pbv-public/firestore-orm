@@ -1,5 +1,5 @@
 // istanbul ignore file
-class DBError extends Error {
+export class DBError extends Error {
   constructor (action, e) {
     super(`Failed to ${action} with error ${e}`)
     this.code = e.code
@@ -8,5 +8,3 @@ class DBError extends Error {
     this.allErrors = e.allErrors
   }
 }
-
-module.exports = DBError

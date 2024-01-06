@@ -1,10 +1,10 @@
-const S = require('@pbvision/schema')
-const { BaseTest, runTests } = require('@pbvision/jest-unit-test')
+import { BaseTest, runTests } from '@pbvision/jest-unit-test'
+import S from '@pbvision/schema'
 
-const { NotImplementedError } = require('../src/errors')
-const { __FieldInterface } = require('../src/fields')
+import { NotImplementedError } from '../src/errors.js'
+import { __FieldInterface } from '../src/fields.js'
 
-const db = require('./db-with-field-maker')
+import db from './db-with-field-maker.js'
 
 class CommonFieldTest extends BaseTest {
   makeSureMutableFieldWorks (field) {

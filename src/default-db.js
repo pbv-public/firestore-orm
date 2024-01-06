@@ -1,8 +1,8 @@
 // Convenient helper to setup our db connection using environment variables.
 // The constructed db instance will be cached by NodeJS.
-const Firestore = require('@google-cloud/firestore')
+import Firestore from '@google-cloud/firestore'
 
-const setup = require('./firestore')
+import setup from './firestore.js'
 
 // make Firestore look like the Transaction object (it already has getAll but
 // does not have these others)
@@ -18,4 +18,4 @@ const firestoreClient = new Firestore({
   ignoreUndefinedProperties: true
 })
 
-module.exports = setup(firestoreClient)
+export default setup(firestoreClient)

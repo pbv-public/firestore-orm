@@ -1,7 +1,7 @@
 /**
  * Key uniquely identifies a model.
  */
-class Key {
+export class Key {
   /**
    * @param {Model} Cls a Model class
    * @param {Object} encodedKey encoded key
@@ -26,7 +26,7 @@ class Key {
  * This is useful because key equality cannot be checked with the
  * built-in equality operator.
  */
-class UniqueKeyList extends Array {
+export class UniqueKeyList extends Array {
   constructor (...keys) {
     super(...keys)
     const hashes = keys.map(key => this.constructor.getKeyHash(key))
@@ -58,9 +58,4 @@ class UniqueKeyList extends Array {
     }
     return ret
   }
-}
-
-module.exports = {
-  Key,
-  UniqueKeyList
 }

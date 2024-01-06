@@ -1,8 +1,9 @@
-const S = require('@pbvision/schema')
-const { BaseTest, runTests } = require('@pbvision/jest-unit-test')
-const uuidv4 = require('uuid').v4
+import { jest } from '@jest/globals'
+import { BaseTest, runTests } from '@pbvision/jest-unit-test'
+import S from '@pbvision/schema'
+import { v4 as uuidv4 } from 'uuid'
 
-const db = require('../src/default-db')
+import db from '../src/default-db.js'
 
 class OrderWithNoPrice extends db.Model {
   static FIELDS = {

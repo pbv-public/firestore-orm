@@ -1,10 +1,10 @@
-const S = require('@pbvision/schema')
+import S from '@pbvision/schema'
 
-const {
+import {
   getWithArgs,
   Context
-} = require('./context')
-const {
+} from './context.js'
+import {
   DeletedTwiceError,
   InvalidFieldError,
   InvalidOptionsError,
@@ -13,17 +13,17 @@ const {
   ModelTrackedTwiceError,
   TransactionFailedError,
   WriteAttemptedInReadOnlyTxError
-} = require('./errors')
-const {
+} from './errors.js'
+import {
   __Field,
   ArrayField,
   BooleanField,
   NumberField,
   ObjectField,
   StringField
-} = require('./fields')
-const { Key, UniqueKeyList } = require('./key')
-const { Model } = require('./models')
+} from './fields.js'
+import { Key, UniqueKeyList } from './key.js'
+import { Model } from './models.js'
 
 /**
  * @module firestore
@@ -37,7 +37,7 @@ const { Model } = require('./models')
  * @returns {Object} Symbols that clients of this library can use.
  * @private
  */
-function setup (firestoreDB) {
+export default function setup (firestoreDB) {
   Key.firestoreDB = firestoreDB
   const toExport = {
     S,
@@ -71,5 +71,3 @@ function setup (firestoreDB) {
   }
   return toExport
 }
-
-module.exports = setup

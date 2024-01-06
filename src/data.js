@@ -1,10 +1,10 @@
-const { Key } = require('./key')
+import { Key } from './key.js'
 
 /**
  * Data includes a model's key and non-key fields.
  * @param {Object} [fields] field (non-key) values
  */
-class Data extends Key {
+export class Data extends Key {
   constructor (Cls, encodedKey, keyComponents, fields) {
     super(Cls, encodedKey, keyComponents)
     this.data = fields
@@ -17,8 +17,4 @@ class Data extends Key {
   get vals () {
     return { ...this.keyComponents, ...this.data }
   }
-}
-
-module.exports = {
-  Data
 }

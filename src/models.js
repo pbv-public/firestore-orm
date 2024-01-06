@@ -1,26 +1,26 @@
-const assert = require('assert')
+import assert from 'node:assert'
 
-const { Transaction } = require('@google-cloud/firestore')
-const S = require('@pbvision/schema')
-const stableStringify = require('fast-json-stable-stringify')
+import { Transaction } from '@google-cloud/firestore'
+import S from '@pbvision/schema'
+import stableStringify from 'fast-json-stable-stringify'
 
-const { Data } = require('./data')
-const {
+import { Data } from './data.js'
+import {
   InvalidFieldError,
   InvalidParameterError,
   GenericModelError
-} = require('./errors')
-const { __Field, SCHEMA_TYPE_TO_FIELD_CLASS_MAP } = require('./fields')
-const { Key } = require('./key')
-const {
+} from './errors.js'
+import { __Field, SCHEMA_TYPE_TO_FIELD_CLASS_MAP } from './fields.js'
+import { Key } from './key.js'
+import {
   validateValue,
   SCHEMA_TYPE_TO_JS_TYPE_MAP
-} = require('./utils')
+} from './utils.js'
 
 /**
  * The base class for modeling data.
  */
-class Model {
+export class Model {
   /**
    * Create a representation of a database Doc. Should only be used by the
    * library.
@@ -86,7 +86,7 @@ class Model {
         opts,
         val: vals[name],
         valIsFromDB: !this.isNew && !this.__isPartial,
-        valSpecified: valSpecified,
+        valSpecified,
         isForUpdate: this.__isPartial
       })
       Object.seal(field)
@@ -535,8 +535,4 @@ class Model {
     }
     return ret
   }
-}
-
-module.exports = {
-  Model
 }

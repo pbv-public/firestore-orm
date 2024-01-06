@@ -1,11 +1,12 @@
-const { FieldValue } = require('@google-cloud/firestore')
-const S = require('@pbvision/schema')
-const { BaseTest, runTests } = require('@pbvision/jest-unit-test')
-const uuidv4 = require('uuid').v4
+import { FieldValue } from '@google-cloud/firestore'
+import { jest } from '@jest/globals'
+import { BaseTest, runTests } from '@pbvision/jest-unit-test'
+import S from '@pbvision/schema'
+import { v4 as uuidv4 } from 'uuid'
 
-const { Context } = require('../src/context')
+import { Context } from '../src/context.js'
 
-const db = require('./db-with-field-maker')
+import db from './db-with-field-maker.js'
 
 class BadModelTest extends BaseTest {
   check (cls, msg) {
@@ -162,7 +163,7 @@ class SimpleExampleTest extends BaseTest {
     jest.resetModules()
     const oldVal = process.env.INDEBUGGER
     process.env.INDEBUGGER = 0
-    const tempDB = require('../src/default-db')
+    const { default: tempDB } = await import('../src/default-db.js')
     expect(tempDB.Model.__private).toBe(undefined)
     process.env.INDEBUGGER = oldVal
     jest.resetModules()
@@ -783,7 +784,7 @@ class DefaultsTest extends BaseTest {
 
     await db.Context.run(async tx => {
       tx.create(NestedDefaultsExample, {
-        id: id,
+        id,
         arr: [{ int: 2 }, { int: 3 }]
       })
     })
@@ -829,7 +830,7 @@ class DefaultsTest extends BaseTest {
 
     await db.Context.run(async tx => {
       tx.create(NestedDefaultsExample, {
-        id: id,
+        id,
         arr: [{ int: 2 }, { int: 3 }]
       })
     })

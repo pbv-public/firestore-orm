@@ -1004,6 +1004,41 @@ class OptDefaultExampleTest extends BaseTest {
   }
 }
 
+class ObjectWithOptionalObject extends db.Model {
+  static FIELDS = {
+    x: S.obj({
+      y: S.obj({
+        z: S.int
+      }).optional()
+    }).optional()
+  }
+}
+
+class OptionalObjectTest extends BaseTest {
+  async test () {
+    const id = uuidv4()
+    const v0 = await db.Context.run(async tx => {
+      return tx.create(ObjectWithOptionalObject, { id })
+    })
+    expect(v0.x).toBe(undefined)
+
+    const v1 = await db.Context.run(async tx => {
+      const data = await tx.get(ObjectWithOptionalObject, { id })
+      data.x = {}
+      return data
+    })
+    expect(v1.x).not.toBe(undefined)
+    expect(v1.x.y).toBe(undefined)
+
+    const v2 = await db.Context.run(async tx => {
+      const data = await tx.get(ObjectWithOptionalObject, { id })
+      data.x.y = { z: 3 }
+      return data
+    })
+    expect(v2.x.y.z).toBe(3)
+  }
+}
+
 class SnapshotTest extends BaseTest {
   async beforeAll () {
     await super.beforeAll()

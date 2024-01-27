@@ -403,7 +403,12 @@ export class Model {
         pieces.push(stableStringify(givenValue))
       }
     }
-    return pieces.join('\0')
+
+    // ` becomes ``  (because we're going to use ` as an escape sequence)
+    // / becomes `F  (because / is not allowed in Firestore doc keys)
+    const ret = pieces.join('\0')
+    const escaped = ret.replace(/`/g, '``').replace(/[/]/g, '`F')
+    return escaped
   }
 
   /**
@@ -418,7 +423,8 @@ export class Model {
    */
   static __decodeCompoundValue (keyOrder, val) {
     // Assume val is otherwise a string
-    const pieces = val.split('\0')
+    const unescaped = val.replace(/`F/g, '/').replace(/``/g, '`')
+    const pieces = unescaped.split('\0')
     if (pieces.length !== keyOrder.length) {
       throw new InvalidFieldError(
         'KEY', 'failed to parse key: incorrect number of components')

@@ -1275,6 +1275,53 @@ class LeftoverContextTest extends BaseTest {
       await ctx.createOrOverwrite(TransactionExample, { id })
     })).rejects.toThrow('Model tracked twice')
   }
+
+  async testForwardSlashInKeys () {
+    // should be able to have ` and / in keys and data
+    const examples = [
+      '`', '``', '```',
+      '/', '//', '///',
+      '`/',
+      '/`',
+      '`/`/`/`',
+      '/`/`/`/`',
+      '``////``/``/`/////`'
+    ]
+    for (let i = 0; i < examples.length; i++) {
+      const id = examples[i]
+      const x = await db.Context.run(async ctx => {
+        return await ctx.create(StringExample, { id, field1: i, field2: { s: id } })
+      })
+      expect(x.id).toBe(id)
+      expect(x.field1).toBe(i)
+      expect(x.field2.s).toBe(id)
+      const y = await db.Context.run(async ctx => {
+        return await ctx.get(StringExample, id)
+      })
+      expect(x.toJSON()).toEqual(y.toJSON())
+      expect(y.id).toBe(id)
+      expect(y.field1).toBe(i)
+      expect(y.field2.s).toBe(id)
+
+      // the docRef.path will have been escaped so it won't match ID!
+      expect(x.toString()).not.toBe(id)
+      expect(y.toString()).not.toBe(id)
+      expect(x.toString()).toBe(y.toString())
+      if (id === '`') {
+        expect(x.toString()).toBe('StringExample/``')
+      } else if (id === '/') {
+        expect(x.toString()).toBe('StringExample/`F')
+      }
+    }
+  }
+}
+
+class StringExample extends db.Model {
+  static KEY = { id: S.str.min(1) }
+  static FIELDS = {
+    field1: S.double,
+    field2: S.obj({ s: S.str })
+  }
 }
 
 runTests(

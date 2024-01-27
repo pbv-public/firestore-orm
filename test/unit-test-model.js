@@ -1175,6 +1175,7 @@ runTests(
   KeyTest,
   NewModelTest,
   OptDefaultExampleTest,
+  OptionalObjectTest,
   SimpleExampleTest,
   SnapshotTest,
   WriteTest,

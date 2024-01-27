@@ -197,7 +197,7 @@ class SimpleExampleTest extends BaseTest {
     // Only export in debugging
     jest.resetModules()
     const oldVal = process.env.FIRESTORE_EMULATOR_HOST
-    process.env.FIRESTORE_EMULATOR_HOST = 0
+    delete process.env.FIRESTORE_EMULATOR_HOST
     const { default: tempDB } = await import('../src/default-db.js')
     expect(tempDB.Model.__private).toBe(undefined)
     process.env.FIRESTORE_EMULATOR_HOST = oldVal

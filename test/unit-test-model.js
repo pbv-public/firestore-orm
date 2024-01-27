@@ -134,6 +134,26 @@ class SimpleExampleTest extends BaseTest {
     expect(id10.length).toBe(10)
     expect(id10v2).not.toBe(id10)
     expect(id10).toMatch(/[A-Za-z0-9]{10}/)
+
+    const schema = db.makeAutoIdSchema()
+    const id1FromSchema = schema.newId()
+    const id2FromSchema = schema.newId()
+    expect(id1FromSchema).not.toBe(id2FromSchema)
+    const validate = schema.compile('testAutomaticIDs')
+    validate(id1FromSchema)
+    validate(id1)
+    expect(() => validate(id10)).toThrow(S.ValidationError)
+
+    const schema2 = db.makeAutoIdSchema(10, false, 'length 10 all case')
+    expect(schema.newId).not.toBe(schema2.newId)
+    const id1FromSchema2 = schema2.newId()
+    expect(id1FromSchema2).not.toBe(id10)
+    const validate2 = schema2.compile('testAutomaticIDs2')
+    expect(() => validate2(id1FromSchema)).toThrow(S.ValidationError)
+    expect(() => validate2(id1)).toThrow(S.ValidationError)
+    validate2(id10)
+    validate2(id1FromSchema2)
+    expect(schema2.getProp('title')).toBe('length 10 all case')
   }
 
   async testRegistration () {

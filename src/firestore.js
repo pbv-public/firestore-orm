@@ -1,3 +1,5 @@
+import assert from 'node:assert'
+
 import S from '@pbvision/schema'
 
 import {
@@ -66,6 +68,29 @@ export default function setup (firestoreDB) {
     return id.substring(0, len)
   }
 
+  /**
+   * Returns a schema for an automatic ID with the specified params.
+   *
+   * Parameters mirror newId().
+   * @param {string} title title for the schema
+   *
+   * The returned schema has a newId() function on it which takes no params and
+   * generates random new IDs which conform to the schema.
+   */
+  function makeAutoIdSchema (len = 20, lowercaseOnly = true, title = undefined) {
+    const allowedChars = `${lowercaseOnly ? '' : 'A-Z'}a-z0-9`
+    let schema = S.str
+      .pattern(`[${allowedChars}]{${len}}`)
+      .min(len).max(len)
+      .desc(`a unique ID consisting of ${len} digits and letters
+             (${lowercaseOnly ? 'lowercase only' : 'uppercase and lowercase'})`)
+    if (title) {
+      schema = schema.title(title)
+    }
+    schema.newId = () => newId(len, lowercaseOnly)
+    return schema
+  }
+
   Key.firestoreDB = firestoreDB
   const toExport = {
     S,
@@ -73,6 +98,7 @@ export default function setup (firestoreDB) {
     UniqueKeyList,
     Context,
     firestoreDB,
+    makeAutoIdSchema,
     newId,
 
     // Errors

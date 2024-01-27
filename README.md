@@ -8,6 +8,8 @@ high-level abstractions to structure data and prevent race conditions.
   - [Minimal Example](#minimal-example)
   - [Collections](#collections)
     - [Keys](#keys)
+      - [Semantic Keys](#semantic-keys)
+      - [Random Keys](#random-keys)
     - [Fields](#fields)
     - [Schema Enforcement](#schema-enforcement)
     - [Custom Methods](#custom-methods)
@@ -117,6 +119,7 @@ Access each component of a key just like any other field:
   }
 ```
 
+#### Semantic Keys
 It is best practice for keys to have semantic meaning whenever possible. In
 this example, each runner finishes each race just one time so making the key a
 combination of those values is ideal. This is better than a meaningless random
@@ -132,6 +135,13 @@ value because this:
 
 Note: Keys are collection-specific. Two different docs in different collections may have
 the same key.
+
+#### Random Keys
+If keys are random, then you can use `db.makeAutoIdSchema()` to generate a
+schema for validating them. That schema object also has a `newId()` method
+which generates IDs which conform to that schema. You can configure the length
+of the IDs (20 by default) and whether uppercase letters are included (false by
+default) by passing parameters to the `makeAutoIdSchema()` function.
 
 
 ### Fields

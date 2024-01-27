@@ -1,6 +1,6 @@
 {
   "name": "@pbvision/firestore-orm",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "Firestore ORM Library",
   "license": "Apache-2.0",
   "type": "module",

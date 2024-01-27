@@ -121,6 +121,21 @@ class SimpleExample extends db.Model {}
 SimpleExample.__doOneTimeModelPrep()
 
 class SimpleExampleTest extends BaseTest {
+  async testAutomaticIDs () {
+    const id1 = db.newId()
+    const id2 = db.newId()
+    expect(id1).not.toBe(id2)
+    expect(typeof id1).toBe('string')
+    expect(id1.length).toBe(20)
+    expect(id1).toMatch(/[a-z0-9]{20}/)
+
+    const id10 = db.newId(10, false)
+    const id10v2 = db.newId(10, false)
+    expect(id10.length).toBe(10)
+    expect(id10v2).not.toBe(id10)
+    expect(id10).toMatch(/[A-Za-z0-9]{10}/)
+  }
+
   async testRegistration () {
     class TmpExample extends db.Model {}
     expect(!!TmpExample.__setupDone).toBe(false)

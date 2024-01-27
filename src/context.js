@@ -103,9 +103,9 @@ export class Context {
     return {
       readOnly: false,
       consistentReads: true,
-      initialBackoff: process.env.INDEBUGGER ? 1 : 500,
+      initialBackoff: process.env.FIRESTORE_EMULATOR_HOST ? 1 : 500,
       maxBackoff: 10000,
-      retries: process.env.INDEBUGGER ? 0 : 4, // no retry by default in unit tests for speed
+      retries: process.env.FIRESTORE_EMULATOR_HOST ? 0 : 4, // no retry by default in unit tests for speed
       cacheModels: false
     }
   }

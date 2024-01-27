@@ -196,11 +196,11 @@ class SimpleExampleTest extends BaseTest {
   async testDebugFunctionExport () {
     // Only export in debugging
     jest.resetModules()
-    const oldVal = process.env.INDEBUGGER
-    process.env.INDEBUGGER = 0
+    const oldVal = process.env.FIRESTORE_EMULATOR_HOST
+    process.env.FIRESTORE_EMULATOR_HOST = 0
     const { default: tempDB } = await import('../src/default-db.js')
     expect(tempDB.Model.__private).toBe(undefined)
-    process.env.INDEBUGGER = oldVal
+    process.env.FIRESTORE_EMULATOR_HOST = oldVal
     jest.resetModules()
   }
 

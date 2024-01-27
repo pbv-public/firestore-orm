@@ -111,7 +111,7 @@ export default function setup (firestoreDB) {
     TransactionFailedError,
     WriteAttemptedInReadOnlyTxError
   }
-  if (Number(process.env.INDEBUGGER)) {
+  if (Number(process.env.FIRESTORE_EMULATOR_HOST)) {
     toExport.__private = {
       __Field,
       fields: [

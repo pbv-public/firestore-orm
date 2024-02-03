@@ -88,7 +88,7 @@ export default function setup (firestoreDB) {
       schema = schema.title(title)
     }
     schema.newId = () => newId(len, lowercaseOnly)
-    return schema
+    return schema.lock()
   }
 
   Key.firestoreDB = firestoreDB

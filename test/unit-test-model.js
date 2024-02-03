@@ -136,6 +136,7 @@ class SimpleExampleTest extends BaseTest {
     expect(id10).toMatch(/[A-Za-z0-9]{10}/)
 
     const schema = db.makeAutoIdSchema()
+    expect(() => schema.optional()).toThrow('Schema is locked')
     const id1FromSchema = schema.newId()
     const id2FromSchema = schema.newId()
     expect(id1FromSchema).not.toBe(id2FromSchema)

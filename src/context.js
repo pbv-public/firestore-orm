@@ -642,11 +642,18 @@ function parseFirestoreError (err) {
     }
 
     // error 6 is if you try to create a model that already exists
-    const docInfo = parseFirestoreErrorPath(err)
-    if (docInfo) {
-      if (err.code === 6) {
-        return new ModelAlreadyExistsError(docInfo.collection, docInfo.id)
+    if (err.code === 6) {
+      // if we can't parse out the doc id, then still throw this error but the
+      // error data will require some parsing to get the doc id later (noticed
+      // that from firebase-tools 1.18.2 to 1.19.1 the format of this error
+      // changed)
+      const docInfo = parseFirestoreErrorPath(err)
+      if (!docInfo) {
+        console.warn('could not parse model already exists error: ', err)
       }
+      return new ModelAlreadyExistsError(
+        docInfo?.collection ?? 'could not parse',
+        docInfo?.id ?? err.message)
     }
   }
 }
@@ -668,5 +675,24 @@ function parseFirestoreErrorPath (err) {
         return elt
       } catch { /* no-op */ }
     }
+  } else {
+    return parseFirestoreErrorPathAlternate(err)
+  }
+}
+
+// istanbul ignore next
+function parseFirestoreErrorPathAlternate (err) {
+  const startIdx = err.message.indexOf('path=')
+  if (startIdx === -1) {
+    return
+  }
+  const endIdx = err.message.lastIndexOf('}')
+  if (endIdx < startIdx) {
+    return
+  }
+  const path = err.message.substring(startIdx + 5, endIdx)
+  const pieces = path.split('/', 2)
+  if (pieces.length === 2) {
+    return { collection: pieces[0], id: pieces[1] }
   }
 }

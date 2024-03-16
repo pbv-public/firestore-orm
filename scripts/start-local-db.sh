@@ -1,12 +1,13 @@
 #!/bin/bash
 set -o errexit
 set -o nounset
+cd "`dirname \"$0\"`"
 
-firestorePort=8404
-pid=`lsof -tPi :$firestorePort -sTCP:LISTEN || echo 'port_not_in_use'`
-if [ "$pid" != "port_not_in_use" ]; then
-    echo "local db emulator port $firestorePort already in use; replacing PID $pid"
+firestorePort=9091
+pid=`ps ax | grep 'firebase emulators:start' | grep -v grep | cut -d' ' -f1`
+if [ "$pid" != "" ]; then
+    echo "local emulator already running; replacing PID $pid"
     kill $pid
 fi
-gcloud emulators firestore start --host-port [::1]:$firestorePort > /dev/null 2> /dev/null &
-echo "firestore db emulator is now running in the background as PID $!"
+firebase emulators:start --only firestore > /dev/null 2> /dev/null &
+echo "firebase emulators are now running in the background as PID $!"

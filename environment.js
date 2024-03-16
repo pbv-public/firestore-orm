@@ -1,1 +1,1 @@
-process.env.FIRESTORE_EMULATOR_HOST = '[::1]:8404'
+process.env.FIRESTORE_EMULATOR_HOST = '127.0.0.1:9091'

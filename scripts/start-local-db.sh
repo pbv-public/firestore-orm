@@ -3,7 +3,6 @@ set -o errexit
 set -o nounset
 cd "`dirname \"$0\"`"
 
-firestorePort=9091
 pid=`ps ax | grep 'firebase emulators:start' | grep -v grep | cut -d' ' -f1`
 if [ "$pid" != "" ]; then
     echo "local emulator already running; replacing PID $pid"

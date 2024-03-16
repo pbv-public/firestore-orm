@@ -2,9 +2,6 @@
   "firestore": {},
   "emulators": {
     "singleProjectMode": true,
-    "auth": {
-      "port": "9090"
-    },
     "firestore": {
       "port": "9091"
     }

@@ -49,6 +49,7 @@ export class Model {
         this.constructor.__keyOrder, vals.__id)
       delete vals._id
       Object.assign(vals, keyComponents)
+      this.__key = this.constructor.key(keyComponents, false)
     } else {
       this.__key = this.constructor.key(vals, true)
     }

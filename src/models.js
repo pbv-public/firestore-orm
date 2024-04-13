@@ -61,6 +61,27 @@ export class Model {
     Object.seal(this)
   }
 
+  /** Returns a query object for querying this model. */
+  static makeQuery () {
+    return Key.firestoreDB.collection(this.collectionName)
+  }
+
+  /**
+   * Runs a query object returned by this model's makeQuery() function.
+   * @returns {Array<Model>} returns an array of instances of this class that
+   *   matched the query
+   */
+  static async runQuery (query) {
+    const results = await query.get()
+    const ret = []
+    results.forEach(raw => {
+      const vals = raw.data()
+      vals.__id = raw.id
+      ret.push(new this(false, vals))
+    })
+    return ret
+  }
+
   static async register (registrar) {
     this.__doOneTimeModelPrep()
     await registrar.registerModel(this)

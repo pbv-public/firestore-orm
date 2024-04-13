@@ -420,6 +420,39 @@ class HasDefaultNonOptionalField extends db.Model {
   }
 }
 
+class QueryExample extends db.Model {
+  static KEY = { id: S.str }
+  static FIELDS = { x: S.int, y: S.int }
+}
+
+class QueryTest extends BaseTest {
+  async beforeAll () {
+    await super.beforeAll()
+    this.all = await db.Context.run(async tx => {
+      const promises = []
+      for (let i = 0; i < 5; i++) {
+        promises.push(tx.get(
+          QueryExample,
+          { id: `k${i + 1}`, x: i, y: i * i },
+          { createIfMissing: true }))
+      }
+      return await Promise.all(promises)
+    })
+    this.all = this.all.map(x => x.toJSON())
+  }
+
+  async testQueryAll () {
+    const ret = await QueryExample.runQuery(QueryExample.makeQuery())
+    expect(ret.map(x => x.toJSON())).toEqual(this.all)
+  }
+
+  async testQueryWithFilter () {
+    const q = QueryExample.makeQuery().where('x', '>=', 3)
+    const ret = await QueryExample.runQuery(q)
+    expect(ret.map(x => x.toJSON())).toEqual(this.all.slice(3))
+  }
+}
+
 class WriteTest extends BaseTest {
   async beforeAll () {
     this.modelName = uuidv4()
@@ -1177,6 +1210,7 @@ runTests(
   NewModelTest,
   OptDefaultExampleTest,
   OptionalObjectTest,
+  QueryTest,
   SimpleExampleTest,
   SnapshotTest,
   WriteTest,

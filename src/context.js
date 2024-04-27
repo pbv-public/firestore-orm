@@ -543,6 +543,7 @@ export class Context {
         await this.__eventEmitter.emit(this.constructor.EVENTS.POST_COMMIT)
         return ret
       } catch (originalErr) {
+        console.warn('caught error while trying to run the transaction', originalErr)
         const firestoreError = parseFirestoreError(originalErr)
         err = firestoreError ?? originalErr
 
@@ -633,11 +634,13 @@ export class Context {
 function parseFirestoreError (err) {
   // probably a firestore error if it has these fields
   if (err.code && err.details) {
-    // error 10 is the "Transaction lock timeout" error; retryable if separate
+    console.log(`trying to parse firestore error code=${err.code} details=${err.details}`)
+    // error 10 is the "Transaction lock timeout" aka
+    // "Optimistic transaction was aborted" error; retryable if separate
     // transactions got in each other's way but could succeed if ordered
     // differently (this error happens with pessimistic locking, the default
     // Firestore setting)
-    if (err.code === 10 && err.details.indexOf('lock') !== -1) {
+    if (err.code === 10) {
       return new TransactionLockTimeoutError(err.message, err)
     }
 

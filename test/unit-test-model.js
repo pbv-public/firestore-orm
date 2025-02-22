@@ -258,7 +258,7 @@ class NewModelTest extends BaseTest {
     await txCreate(SimpleExample, { id })
     await expect(txCreate(SimpleExample, { id }))
       .rejects.toThrow(
-        `Tried to recreate an existing model: SimpleExample _id=${id}`)
+        'Tried to recreate an existing model:  _id=SimpleExample')
   }
 
   async testNewModelParamsDeprecated () {

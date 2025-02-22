@@ -1,6 +1,6 @@
 {
   "name": "@pbvision/firestore-orm",
-  "version": "0.0.21",
+  "version": "0.0.22",
   "description": "Firestore ORM Library",
   "license": "Apache-2.0",
   "type": "module",
@@ -11,12 +11,12 @@
   "scripts": {
     "build-doc": "./docs/build.sh",
     "check-markdown-link": "./scripts/ci/markdown-link.sh",
-    "debug": "yarn start-local-db && INDEBUGGER=1 ./node_modules/nodemon/bin/nodemon.js --no-lazy --legacy-watch --watch ./src --watch ./example --watch ./test --inspect=9229 ./node_modules/jest/bin/jest.js --coverage --config=./jest.config.json --runInBand",
+    "debug": "yarn start-local-db && GCLOUD_PROJECT=localhost-emulator INDEBUGGER=1 ./node_modules/nodemon/bin/nodemon.js --no-lazy --legacy-watch --watch ./src --watch ./example --watch ./test --inspect=9229 ./node_modules/jest/bin/jest.js --coverage --config=./jest.config.json --runInBand",
     "lint": "./scripts/ci/lint-format-js.sh",
     "setup": "yarn install --frozen-lockfile && pip install -r requirements.txt",
     "start-local-db": "./scripts/start-local-db.sh",
     "test": "yarn -s start-local-db && yarn -s test-without-starting-db",
-    "test-without-starting-db": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js --coverage --config=./jest.config.json"
+    "test-without-starting-db": "GCLOUD_PROJECT=localhost-emulator node --experimental-vm-modules ./node_modules/jest/bin/jest.js --coverage --config=./jest.config.json"
   },
   "contributors": [
     "Yu Guan",

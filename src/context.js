@@ -683,13 +683,17 @@ function parseFirestoreErrorPath (err) {
   }
 }
 
-// istanbul ignore next
 function parseFirestoreErrorPathAlternate (err) {
   const startIdx = err.message.indexOf('path=')
   if (startIdx === -1) {
     return
   }
-  const endIdx = err.message.lastIndexOf('}')
+  // the path value is terminated by the EntityRef bracket. firebase-tools<=14
+  // (firestore emulator v1.19.x) wraps it in curly braces
+  // (EntityRef{...path=/Type/id}), while v1.21.0 switched to square brackets
+  // (EntityRef[...path=/Type/id]); accept whichever closes last.
+  const endIdx = Math.max(
+    err.message.lastIndexOf('}'), err.message.lastIndexOf(']'))
   if (endIdx < startIdx) {
     return
   }

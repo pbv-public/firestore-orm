@@ -891,6 +891,41 @@ class TransactionRetryTest extends QuickTransactionTest {
     await this.expectRetries(err, 3, 1)
   }
 
+  async expectAlreadyExistsParse (message, expectedRegex) {
+    const err = new Error(message)
+    err.code = 6
+    err.details = message
+    const fut = db.Context.run(() => { throw err })
+    await expect(fut).rejects.toThrow(db.ModelAlreadyExistsError)
+    await expect(fut).rejects.toThrow(expectedRegex)
+  }
+
+  // the firestore emulator's ALREADY_EXISTS message wraps the doc path in an
+  // EntityRef whose bracket style changed across versions; make sure we still
+  // extract the path from each known format (and degrade gracefully otherwise)
+  async testAlreadyExistsErrorFormats () {
+    // firestore emulator v1.19.x (firebase-tools <= 14): curly braces
+    await this.expectAlreadyExistsParse(
+      '6 ALREADY_EXISTS: entity already exists: EntityRef{partitionRef=dev~localhost-emulator, path=/User/abc123}',
+      /Tried to recreate an existing model: {2}_id=User/)
+    // firestore emulator v1.21.0: square brackets
+    await this.expectAlreadyExistsParse(
+      '6 ALREADY_EXISTS: entity already exists: EntityRef[partitionRef=dev~localhost-emulator, path=/User/abc123]',
+      /Tried to recreate an existing model: {2}_id=User/)
+    // no path at all => could not parse
+    await this.expectAlreadyExistsParse(
+      '6 ALREADY_EXISTS: entity already exists (no recognizable location)',
+      /Tried to recreate an existing model: could not parse/)
+    // path= present but no closing bracket => could not parse
+    await this.expectAlreadyExistsParse(
+      '6 ALREADY_EXISTS: path=/User/abc123 (truncated, no bracket)',
+      /Tried to recreate an existing model: could not parse/)
+    // path= present but not a Type/id pair => could not parse
+    await this.expectAlreadyExistsParse(
+      '6 ALREADY_EXISTS: EntityRef[path=nopath]',
+      /Tried to recreate an existing model: could not parse/)
+  }
+
   testIsRetryableErrors () {
     const err = new Error()
     expect(db.Context.__isRetryable(err)).toBe(false)

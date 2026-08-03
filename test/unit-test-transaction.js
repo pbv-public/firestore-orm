@@ -868,7 +868,25 @@ class TransactionRetryTest extends QuickTransactionTest {
     err.details = 'fake firestore lock error'
     await this.expectRetries(err, 1, 2)
 
+    // error 3 (INVALID_ARGUMENT) naming an expired transaction should be
+    // retried: the transaction ran out of time before this call landed, which
+    // says nothing about the work being wrong
+    err = new Error(
+      '3 INVALID_ARGUMENT: The referenced transaction has expired or is no ' +
+      'longer valid.')
+    err.code = 3
+    err.details = 'fake firestore expired transaction error'
+    await this.expectRetries(err, 1, 2)
+
+    // ...but every OTHER error 3 is a real caller mistake and must fail fast,
+    // so the message is what qualifies it, never the code alone
+    err = new Error('3 INVALID_ARGUMENT: Document parent name is invalid.')
+    err.code = 3
+    err.details = 'fake firestore invalid argument error'
+    await this.expectRetries(err, 3, 1)
+
     // error 6 (create failed because doc already exists) should not be retried
+    err = new Error('fake')
     err.code = 6
     err.details = 'fake firestore error'
     // this error requires an Element

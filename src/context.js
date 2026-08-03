@@ -14,6 +14,7 @@ import {
   WriteAttemptedInReadOnlyTxError,
   ModelTrackedTwiceError,
   ModelAlreadyExistsError,
+  TransactionExpiredError,
   TransactionLockTimeoutError
 } from './errors.js'
 import { Key } from './key.js'
@@ -642,6 +643,22 @@ function parseFirestoreError (err) {
     // Firestore setting)
     if (err.code === 10) {
       return new TransactionLockTimeoutError(err.message, err)
+    }
+
+    // error 3 is INVALID_ARGUMENT, which mostly means the caller got something
+    // wrong and must NOT be retried (bad field value, malformed query). The one
+    // exception is "The referenced transaction has expired or is no longer
+    // valid": the transaction outlived Firestore's limit before this call
+    // reached the server, which happens when the client library's own retries
+    // push a slow call past the window. That says nothing about the work being
+    // wrong, only that this attempt ran out of time, so a fresh transaction is
+    // expected to succeed. Left unclassified it was non-retryable, so a
+    // transient slowdown surfaced to callers as a hard failure. Match on the
+    // message, never on the code alone, so genuine INVALID_ARGUMENT bugs still
+    // fail fast.
+    if (err.code === 3 &&
+        /transaction has expired or is no longer valid/i.test(err.message)) {
+      return new TransactionExpiredError(err.message, err)
     }
 
     // error 6 is if you try to create a model that already exists

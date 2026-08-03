@@ -71,6 +71,23 @@ export class TransactionLockTimeoutError extends TransactionFailedError {
 }
 
 /**
+ * Thrown when Firestore rejects an operation because the transaction it names
+ * is no longer valid, i.e. the transaction outlived Firestore's limit before
+ * this call reached the server. Like a lock timeout this says nothing about the
+ * work being wrong, only that this attempt ran out of time, so a fresh attempt
+ * is expected to succeed and it is retryable.
+ *
+ * @memberof Errors
+ */
+export class TransactionExpiredError extends TransactionFailedError {
+  constructor (reason, original) {
+    super(reason, original)
+    this.name = this.constructor.name
+    this.retryable = true
+  }
+}
+
+/**
  * Thrown when there's some error with a particular model.
  * @memberof Errors
  */

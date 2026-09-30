@@ -909,27 +909,47 @@ class TransactionRetryTest extends QuickTransactionTest {
     await this.expectRetries(err, 3, 1)
   }
 
-  async expectAlreadyExistsParse (message, expectedRegex) {
+  async expectAlreadyExistsParse (message, expected) {
     const err = new Error(message)
     err.code = 6
     err.details = message
     const fut = db.Context.run(() => { throw err })
     await expect(fut).rejects.toThrow(db.ModelAlreadyExistsError)
-    await expect(fut).rejects.toThrow(expectedRegex)
+    await expect(fut).rejects.toThrow(expected)
   }
 
-  // the firestore emulator's ALREADY_EXISTS message wraps the doc path in an
-  // EntityRef whose bracket style changed across versions; make sure we still
-  // extract the path from each known format (and degrade gracefully otherwise)
+  // production Firestore and the emulator word ALREADY_EXISTS differently (and
+  // the emulator's EntityRef bracket style changed across versions); make sure
+  // we extract the doc path from each known format (and degrade gracefully
+  // otherwise)
   async testAlreadyExistsErrorFormats () {
+    // production Firestore: the document's full resource path
+    await this.expectAlreadyExistsParse(
+      '6 ALREADY_EXISTS: Document already exists: projects/p/databases/(default)/documents/User/abc123',
+      /Tried to recreate an existing model: User _id=abc123$/)
+    // ...including a composite key, whose parts are joined by a NUL
+    await this.expectAlreadyExistsParse(
+      '6 ALREADY_EXISTS: Document already exists: projects/p/databases/(default)/documents/Spend/8327\x00abc123',
+      'Tried to recreate an existing model: Spend _id=8327\x00abc123')
+    // ...but not a nested collection's path
+    await this.expectAlreadyExistsParse(
+      '6 ALREADY_EXISTS: Document already exists: projects/p/databases/(default)/documents/A/1/B/2',
+      /Tried to recreate an existing model: could not parse/)
     // firestore emulator v1.19.x (firebase-tools <= 14): curly braces
     await this.expectAlreadyExistsParse(
       '6 ALREADY_EXISTS: entity already exists: EntityRef{partitionRef=dev~localhost-emulator, path=/User/abc123}',
-      /Tried to recreate an existing model: {2}_id=User/)
+      /Tried to recreate an existing model: User _id=abc123$/)
     // firestore emulator v1.21.0: square brackets
     await this.expectAlreadyExistsParse(
       '6 ALREADY_EXISTS: entity already exists: EntityRef[partitionRef=dev~localhost-emulator, path=/User/abc123]',
-      /Tried to recreate an existing model: {2}_id=User/)
+      /Tried to recreate an existing model: User _id=abc123$/)
+    // a path with an empty type or id => could not parse
+    await this.expectAlreadyExistsParse(
+      '6 ALREADY_EXISTS: EntityRef[path=/User/]',
+      /Tried to recreate an existing model: could not parse/)
+    await this.expectAlreadyExistsParse(
+      '6 ALREADY_EXISTS: EntityRef[path=//abc123]',
+      /Tried to recreate an existing model: could not parse/)
     // no path at all => could not parse
     await this.expectAlreadyExistsParse(
       '6 ALREADY_EXISTS: entity already exists (no recognizable location)',

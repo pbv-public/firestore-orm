@@ -678,7 +678,16 @@ function parseFirestoreError (err) {
   }
 }
 
+// production Firestore names the document's full resource path, e.g.
+// "Document already exists: projects/p/databases/(default)/documents/Type/id"
+const PRODUCTION_ALREADY_EXISTS_PATH =
+  /Document already exists: projects\/[^/]+\/databases\/[^/]+\/documents\/(.+)$/s
+
 function parseFirestoreErrorPath (err) {
+  const docPath = PRODUCTION_ALREADY_EXISTS_PATH.exec(err.message)?.[1]
+  if (docPath) {
+    return splitDocPath(docPath)
+  }
   const startIdx = err.message.indexOf('Element {')
   if (startIdx >= 0) {
     const endIdx = err.message.indexOf('}', startIdx)
@@ -714,9 +723,13 @@ function parseFirestoreErrorPathAlternate (err) {
   if (endIdx < startIdx) {
     return
   }
-  const path = err.message.substring(startIdx + 5, endIdx)
-  const pieces = path.split('/', 2)
-  if (pieces.length === 2) {
+  return splitDocPath(err.message.substring(startIdx + 5, endIdx))
+}
+
+// "Type/id", with or without a leading slash
+function splitDocPath (path) {
+  const pieces = path.replace(/^\//, '').split('/')
+  if (pieces.length === 2 && pieces[0] && pieces[1]) {
     return { collection: pieces[0], id: pieces[1] }
   }
 }
